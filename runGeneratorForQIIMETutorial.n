@@ -1,0 +1,42 @@
+# runGeneratorForQIIMETutorial.n
+name       : runGeneratorForQIIMETutorial
+description: Use generator to create nshell scripts for QIIME scripts
+version    : 1.8.0
+preferred  : True
+tags       : qiime service
+processor  : StackService
+public     : True
+icon       : http://www.n3phele.com/qiimeIcon
+input files:
+	input_fp.file # file to concatenate in generator
+output files:
+  nshells.zip # generated nshell scripts
+HPZone1:
+  ON $$createQiimeImageMachine --produces [nshells.zip: nshells.zip]
+    cd ~ ;
+    sudo mkdir ~/generator_output ;
+    sudo chmod 077 ~/generator_output ;
+    git clone git://github.com/n3phele/nshell-generator.git ;
+
+    # Need to move generator because it needs to be in the same folder as the scripts
+    mv nshell-generator/scripts/make_nshell.py sandbox/qiime_software/qiime-1.8.0-release/scripts ;
+    mv nshell-generator/scripts/nshell_generator.py sandbox/qiime_software/qiime-1.8.0-release/scripts ;
+    cd sandbox/qiime_software/qiime-1.8.0-release/scripts ;
+
+    # Execute this to fix python path
+    source /home/ubuntu/sandbox/qiime_software/activate.sh ;
+
+	mv ~/sandbox/input_fp.file ~/sandbox/qiime_software/qiime-1.8.0-release/scripts ;
+	
+    python make_nshell.py -o ~/generator_output -s validate_mapping_file.py -z HPZone1 -m generatorVM -i 373455 ;
+    python make_nshell.py -o ~/generator_output -s split_libraries.py -z HPZone1 -m generatorVM -i 373455 ;
+
+    # This script needs more memory to run properly
+    # This could also cause an error because of the Greengenes dependency that is not installed properly by QIIME
+    python make_nshell.py -o ~/generator_output -s pick_de_novo_otus.py -z HPZone1 -m generatorVM -f 104 -i 373455 -c input_fp.file ;
+    python make_nshell.py -o ~/generator_output -s make_otu_network.py -z HPZone1 -m generatorVM -i 373455 ;
+    python make_nshell.py -o ~/generator_output -s summarize_taxa_through_plots.py -z HPZone1 -m generatorVM -i 373455 ;
+
+    cd ~/generator_output ;
+    zip -r nshells ./ ;
+    mv nshells.zip ~/sandbox ;
