@@ -3,7 +3,6 @@ package restCalls;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -20,17 +19,10 @@ public class Main {
 	public static void main(String[] args) throws InterruptedException,
 			UnsupportedEncodingException {
 
-		Scanner sc = new Scanner(System.in);
-		System.out
-				.println("Enter your username and password like this sample 'username:password' : ");
-		String userAndPass = sc.nextLine();
+		String userAndPass = args[0] + ":" + args[1];
 		byte[] encode = Base64.encodeBase64(userAndPass.getBytes());
 		String encodedUserAndPass = new String(encode);
-
-		System.out
-				.println("Enter the name of your file repository in n3phele: ");
-		String outputFolder = sc.nextLine();
-		sc.close();
+		String outputFolder = args[2];
 
 		NetClientExport exportFiles = new NetClientExport();
 		NetClientImport importCommand = new NetClientImport();
@@ -523,8 +515,8 @@ public class Main {
 									"arg",
 									"https://n3phele-dev.appspot.com/resources/command/5147476428324864#HPZone1",
 									"parent", runCommand.getLocationService() },
-							"tutorialOutputRest", runGeneratorQIIMETutorialJson,
-							encodedUserAndPass);
+							"tutorialOutputRest",
+							runGeneratorQIIMETutorialJson, encodedUserAndPass);
 			while (!finalized) {
 				checkCommandState.getJson(runCommand.getLocationJsonResponse(),
 						encodedUserAndPass);
