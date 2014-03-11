@@ -464,7 +464,7 @@ public class Main {
 
 		// CREATING QIIME IMAGE
 		System.out
-				.println(" ################# Deploying the QIIME Image ################# \n");
+				.println(" ################# Deploying the QIIME Image on HPCLOUD ################# \n");
 		complete = false;
 		while (!complete) {
 			finalized = false;
@@ -474,9 +474,9 @@ public class Main {
 									"action",
 									"NShell",
 									"name",
-									"createQiimeImageRest",
+									"createQiimeImageHPRest",
 									"arg",
-									"https://n3phele-dev.appspot.com/resources/command/9265023#HPZone1",
+									"https://n3phele-dev.appspot.com/resources/command/5081253669765120#HPZone1",
 									"parent", runCommand.getLocationService() },
 							"", defaultJsonJson, encodedUserAndPass);
 			while (!finalized) {
